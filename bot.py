@@ -21,10 +21,7 @@ class A(commands.Cog):
         self.guild_id = guild_id
         self.channel_id = channel_id
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        print(f'{self.bot.user} でログイン完了')
-
+    async def update(self):
         guild = self.bot.get_guild(self.guild_id)
         channel = self.bot.get_channel(self.channel_id)
         print(f'{guild} の情報を {channel} に送信します')
@@ -60,8 +57,14 @@ class A(commands.Cog):
         message = await channel.history().get(author=self.bot.user) or await channel.send('初期化中')
         await message.edit(content='', embed=e)
 
-        print(f'更新完了、ログアウトします')
-        await self.bot.logout()
+    @commands.Cog.listener()
+    async def on_ready(self):
+        try:
+            print(f'{self.bot.user} でログイン完了')
+            await self.update()
+            print(f'更新完了、ログアウトします')
+        finally:
+            await self.bot.logout()
 
 
 if __name__ == '__main__':

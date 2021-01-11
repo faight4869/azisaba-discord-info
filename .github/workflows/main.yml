@@ -18,5 +18,5 @@ jobs:
       - name: 依存関係のインストール
         run: pip install -r requirements.txt
 
-      - name: リポジトリの取得
-        run: python main.py
+      - name: ファイルを実行
+        run: python bot.py

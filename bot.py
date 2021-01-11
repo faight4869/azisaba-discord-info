@@ -1,13 +1,13 @@
-import itertools
 import os
 from datetime import datetime
+from itertools import groupby
 
 import discord
 from discord.ext import commands
 
 
 def sg(it, func):
-    return{k: list(g) for k, g in itertools.groupby(sorted(it, key=func), key=func)}
+    return{k: list(g) for k, g in groupby(sorted(it, key=func), key=func)}
 
 
 def sg_count(it, func):
@@ -42,24 +42,24 @@ class A(commands.Cog):
         )
         e.add_field(
             name='状態',
-            value='\n'.join([f':green_circle: オンライン',
+            value='\n'.join([':green_circle: オンライン',
                              f'├ :busts_in_silhouette: {status_users.get(discord.Status.online,0)} ユーザー',
                              f'└ :robot: {status_bots.get(discord.Status.online,0)} ボット',
-                             f':crescent_moon: 退席中',
+                             ':crescent_moon: 退席中',
                              f'├ :busts_in_silhouette: {status_users.get(discord.Status.idle,0)} ユーザー',
                              f'└ :robot: {status_bots.get(discord.Status.idle,0)} ボット',
-                             f':no_entry: 取り込み中',
+                             ':no_entry: 取り込み中',
                              f'├ :busts_in_silhouette: {status_users.get(discord.Status.dnd,0)} ユーザー',
                              f'└ :robot: {status_bots.get(discord.Status.dnd,0)} ボット',
-                             f':white_circle: オフライン',
+                             ':white_circle: オフライン',
                              f'├ :busts_in_silhouette: {status_users.get(discord.Status.offline,0)} ユーザー',
                              f'└ :robot: {status_bots.get(discord.Status.offline,0)} ボット']),
         )
         e.add_field(
             name='チャンネル',
-            value='\n'.join([f':speech_balloon: テキスト',
+            value='\n'.join([':speech_balloon: テキスト',
                              f'└ {len(guild.text_channels)} チャンネル',
-                             f':sound: ボイス',
+                             ':sound: ボイス',
                              f'└ {len(guild.voice_channels)} チャンネル']),
         )
 
@@ -71,7 +71,7 @@ class A(commands.Cog):
         try:
             print(f'{self.bot.user} でログイン完了')
             await self.update()
-            print(f'更新完了、ログアウトします')
+            print('更新完了、ログアウトします')
         finally:
             await self.bot.logout()
 

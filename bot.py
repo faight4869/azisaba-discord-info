@@ -27,19 +27,18 @@ class A(commands.Cog):
         print(f'{guild} の情報を {channel} に送信します')
 
         members = sg(guild.members, lambda m: not m.bot)
-        count_members = guild.member_count
-        count_users = len(members[True])
-        count_bots = len(members[False])
-        status_users = sg_count(members[True], lambda m: m.status)
-        status_bots = sg_count(members[False], lambda m: m.status)
+        users = members[True]
+        bots = members[False]
+        status_users = sg_count(users, lambda m: m.status)
+        status_bots = sg_count(bots, lambda m: m.status)
 
         e = discord.Embed(title=f"{guild} の情報", timestamp=datetime.now())
         e.set_thumbnail(url=guild.icon_url)
         e.add_field(
             name='メンバー',
-            value='\n'.join([f'{count_members} 人',
-                             f'├ :busts_in_silhouette: {count_users} ユーザー',
-                             f'└ :robot: {count_bots} ボット']),
+            value='\n'.join([f'{guild.member_count} 人',
+                             f'├ :busts_in_silhouette: {len(users)} ユーザー',
+                             f'└ :robot: {len(bots)} ボット']),
         )
         e.add_field(
             name='状態',

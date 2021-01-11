@@ -37,21 +37,31 @@ class A(commands.Cog):
         e.set_thumbnail(url=guild.icon_url)
         e.add_field(
             name='メンバー',
-            value=f'{count_members} 人 (:busts_in_silhouette: {count_users} ユーザー、:robot: {count_bots} ボット)',
-            inline=False
+            value='\n'.join([f'{count_members} 人',
+                             f'├ :busts_in_silhouette: {count_users} ユーザー',
+                             f'└ :robot: {count_bots} ボット']),
         )
         e.add_field(
             name='状態',
-            value='\n'.join([f':green_circle: オンライン (:busts_in_silhouette: {status_users.get(discord.Status.online,0)} ユーザー、:robot: {status_bots.get(discord.Status.online,0)} ボット)',
-                             f':crescent_moon: 退席中 (:busts_in_silhouette: {status_users.get(discord.Status.idle,0)} ユーザー、:robot: {status_bots.get(discord.Status.idle,0)} ボット)',
-                             f':no_entry: 取り込み中 (:busts_in_silhouette: {status_users.get(discord.Status.dnd,0)} ユーザー、:robot: {status_bots.get(discord.Status.dnd,0)} ボット)',
-                             f':black_circle: オフライン (:busts_in_silhouette: {status_users.get(discord.Status.offline,0)} ユーザー、:robot: {status_bots.get(discord.Status.offline,0)} ボット)']),
-            inline=False)
+            value='\n'.join([f':green_circle: オンライン',
+                             f'├ :busts_in_silhouette: {status_users.get(discord.Status.online,0)} ユーザー',
+                             f'└ :robot: {status_bots.get(discord.Status.online,0)} ボット',
+                             f':crescent_moon: 退席中',
+                             f'├ :busts_in_silhouette: {status_users.get(discord.Status.idle,0)} ユーザー',
+                             f'└ :robot: {status_bots.get(discord.Status.idle,0)} ボット',
+                             f':no_entry: 取り込み中',
+                             f'├ :busts_in_silhouette: {status_users.get(discord.Status.dnd,0)} ユーザー',
+                             f'└ :robot: {status_bots.get(discord.Status.dnd,0)} ボット',
+                             f':white_circle: オフライン',
+                             f'├ :busts_in_silhouette: {status_users.get(discord.Status.offline,0)} ユーザー',
+                             f'└ :robot: {status_bots.get(discord.Status.offline,0)} ボット']),
+        )
         e.add_field(
             name='チャンネル',
-            value='\n'.join([f':speech_balloon: テキスト ({len(guild.text_channels)} チャンネル)',
-                             f':sound: ボイス ({len(guild.voice_channels)} チャンネル)']),
-            inline=False
+            value='\n'.join([f':speech_balloon: テキスト',
+                             f'└ {len(guild.text_channels)} チャンネル',
+                             f':sound: ボイス',
+                             f'└ {len(guild.voice_channels)} チャンネル']),
         )
 
         message = await channel.history().get(author=self.bot.user) or await channel.send('初期化中')

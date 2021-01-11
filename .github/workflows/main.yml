@@ -20,3 +20,7 @@ jobs:
 
       - name: ファイルを実行
         run: python bot.py
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+          GUILD_ID: ${{ secrets.GUILD_ID }}
+          CHANNEL_ID: ${{ secrets.CHANNEL_ID }}

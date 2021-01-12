@@ -1,17 +1,9 @@
 import os
 from datetime import datetime
-from itertools import groupby
 
 import discord
+import pandas as pd
 from discord.ext import commands
-
-
-def sg(it, func):
-    return{k: list(g) for k, g in groupby(sorted(it, key=func), key=func)}
-
-
-def sg_count(it, func):
-    return {k: len(l) for k, l in sg(it, func).items()}
 
 
 class A(commands.Cog):
@@ -26,34 +18,34 @@ class A(commands.Cog):
         channel = self.bot.get_channel(self.channel_id)
         print(f'{guild} の情報を {channel} に送信します')
 
-        members = sg(guild.members, lambda m: not m.bot)
-        users = members[True]
-        bots = members[False]
-        status_users = sg_count(users, lambda m: m.status)
-        status_bots = sg_count(bots, lambda m: m.status)
+        d = map(lambda m: {'member': m,
+                           'is_bot': m.bot,
+                           'status': m.status}, guild.members)
+        df = pd.DataFrame(data=d)
+        print(df)
 
         e = discord.Embed(title=f"{guild} の情報", timestamp=datetime.now())
         e.set_thumbnail(url=guild.icon_url)
         e.add_field(
             name='メンバー',
             value='\n'.join([f'{guild.member_count} 人',
-                             f'├ :busts_in_silhouette: {len(users)} ユーザー',
-                             f'└ :robot: {len(bots)} ボット']),
+                             f'├ :busts_in_silhouette: {len(df[df.is_bot == False].index)} ユーザー',
+                             f'└ :robot: {len(df[df.is_bot == True].index)} ボット']),
         )
         e.add_field(
             name='状態',
             value='\n'.join([':green_circle: オンライン',
-                             f'├ :busts_in_silhouette: {status_users.get(discord.Status.online,0)} ユーザー',
-                             f'└ :robot: {status_bots.get(discord.Status.online,0)} ボット',
+                             f'├ :busts_in_silhouette: {len(df[(df.is_bot == False) & (df.status == discord.Status.online)].index)} ユーザー',
+                             f'└ :robot: {len(df[(df.is_bot == True) & (df.status == discord.Status.online)].index)} ボット',
                              ':crescent_moon: 退席中',
-                             f'├ :busts_in_silhouette: {status_users.get(discord.Status.idle,0)} ユーザー',
-                             f'└ :robot: {status_bots.get(discord.Status.idle,0)} ボット',
+                             f'├ :busts_in_silhouette: {len(df[(df.is_bot == False) & (df.status == discord.Status.idle)].index)} ユーザー',
+                             f'└ :robot: {len(df[(df.is_bot == True) & (df.status == discord.Status.idle)].index)} ボット',
                              ':no_entry: 取り込み中',
-                             f'├ :busts_in_silhouette: {status_users.get(discord.Status.dnd,0)} ユーザー',
-                             f'└ :robot: {status_bots.get(discord.Status.dnd,0)} ボット',
+                             f'├ :busts_in_silhouette: {len(df[(df.is_bot == False) & (df.status == discord.Status.dnd)].index)} ユーザー',
+                             f'└ :robot: {len(df[(df.is_bot == True) & (df.status == discord.Status.dnd)].index)} ボット',
                              ':white_circle: オフライン',
-                             f'├ :busts_in_silhouette: {status_users.get(discord.Status.offline,0)} ユーザー',
-                             f'└ :robot: {status_bots.get(discord.Status.offline,0)} ボット']),
+                             f'├ :busts_in_silhouette: {len(df[(df.is_bot == False) & (df.status == discord.Status.offline)].index)} ユーザー',
+                             f'└ :robot: {len(df[(df.is_bot == True) & (df.status == discord.Status.offline)].index)} ボット']),
         )
         e.add_field(
             name='チャンネル',
